@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 -- |
 -- Module:       $HEADER$
 -- Description:  Provide exclusive access to a resource using lock file.
@@ -7,7 +6,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    experimental
--- Portability:  non-portable (CPP)
+-- Portability:  portable
 --
 -- Provide exclusive access to a resource using lock file.
 module System.IO.LockFile.Resource
