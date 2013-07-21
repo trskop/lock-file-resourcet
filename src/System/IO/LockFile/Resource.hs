@@ -14,8 +14,6 @@ module System.IO.LockFile.Resource
     (
     -- * Locking primitives
       acquireLockFile
-    , acquireLockFile_
-    , acquireLockFile'
 
     -- * Configuration
     , LockingParameters(..)
@@ -27,17 +25,11 @@ module System.IO.LockFile.Resource
     where
 
 import Control.Applicative ((<$>))
-import Control.Monad (void)
 
-import Control.Monad.TaggedException
-    ( Throws
+import Control.Monad.TaggedException (hide)
 #if MIN_VERSION_tagged_exception_core(1,1,0)
-    , MonadExceptionUtilities
-#endif
-    , hide
-    , liftT
-    )
-#if !MIN_VERSION_tagged_exception_core(1,1,0)
+import Control.Monad.TaggedException (MonadExceptionUtilities)
+#else
 import Control.Monad.TaggedException.Utilities (MonadExceptionUtilities)
 #endif
 
@@ -51,26 +43,12 @@ import System.IO.LockFile.Internal
     )
 
 
-acquireLockFile'
-    :: (MonadExceptionUtilities m, MonadResource m)
-    => LockingParameters
-    -> FilePath
-    -> m ReleaseKey
-acquireLockFile' params lockFileName = fst <$> allocate lock' unlock'
-  where
-    lock' = hide $ lock params lockFileName
-    unlock' = hide . unlock lockFileName
-
 acquireLockFile
     :: (MonadExceptionUtilities m, MonadResource m)
     => LockingParameters
     -> FilePath
-    -> Throws LockingException m ReleaseKey
-acquireLockFile = (liftT .) . acquireLockFile'
-
-acquireLockFile_
-    :: (MonadExceptionUtilities m, MonadResource m)
-    => LockingParameters
-    -> FilePath
-    -> Throws LockingException m ()
-acquireLockFile_ = (void .) . acquireLockFile
+    -> m ReleaseKey
+acquireLockFile params lockFileName = fst <$> allocate lock' unlock'
+  where
+    lock' = hide $ lock params lockFileName
+    unlock' = hide . unlock lockFileName
