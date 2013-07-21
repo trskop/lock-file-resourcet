@@ -1,0 +1,49 @@
+name:                   lock-file-resourcet
+version:                0.1.0.0
+synopsis:               Provide exclusive access to a resource using lock file.
+description:
+  Provide exclusive access to a resource using lock file, which are files whose
+  purpose is to signal by their presence that some resource is locked.
+
+homepage:               https://github.com/trskop/lock-file-resourcet
+bug-reports:            https://github.com/trskop/lock-file-resourcet/issues
+license:                BSD3
+license-file:           LICENSE
+author:                 Peter Trsko
+maintainer:             peter.trsko@gmail.com
+copyright:              (c) 2013 Peter Trško
+category:               System
+build-type:             Simple
+cabal-version:          >=1.8
+
+extra-source-files:
+    README.md
+
+flag pedantic
+  description:
+    Pass additional warning flags including -Werror to GHC during compilation.
+  default: False
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     System.IO.LockFile.Resource
+  -- other-modules:
+  build-depends:
+      base ==4.5.*
+
+    , data-default-class == 0.0.*
+    , directory == 1.1.*
+    , lock-file == 0.4.*
+    , resourcet == 0.4.*
+    , tagged-exception-core >= 1.0.0.0 && < 1.2
+    , transformers == 0.3.*
+
+  ghc-options:          -Wall
+  if impl(ghc >= 6.8)
+    ghc-options:        -fwarn-tabs
+  if flag(pedantic)
+    ghc-options:        -Werror
+
+source-repository head
+  type:                 git
+  location:             git://github.com/trskop/lock-file-resourcet.git
