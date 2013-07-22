@@ -1,23 +1,15 @@
-Lock File for ResourceT
-=======================
+-- |
+-- Module:       Main
+-- Description:  Simple example that acquires lock for a short period of time.
+-- Copyright:    (c) 2013 Peter Trsko
+-- License:      BSD3
+--
+-- Maintainer:   peter.trsko@gmail.com
+-- Stability:    experimental
+-- Portability:  portable
+module Main (main)
+    where
 
-
-Description
------------
-
-Provide exclusive access to a resource using lock file, which are files whose
-purpose is to signal by their presence that some resource is locked.
-
-
-Usage Example
--------------
-
-Following example acquires lock file and then waits `1000000` micro seconds
-before releasing it. Note also that it is possible to specify retry strategy.
-Here we set it to `No` and therefore this code won't retry to acquire lock file
-after first failure.
-
-```Haskell
 import Control.Concurrent (threadDelay)
     -- From base package, but GHC specific.
 import Control.Exception as Exception (handle)
@@ -50,24 +42,3 @@ main = Exception.handle exceptionHandler . runResourceT $ do
   where
     exceptionHandler :: LockingException -> IO ()
     exceptionHandler = putStrLn . ("Locking failed with: " ++) . show
-```
-
-This command line example shows that trying to execute two instances of
-`example` at the same time will result in failure of the second one.
-
-```
-$ ghc -Wall -package-conf=`pwd`/cabal-dev/packages-7.4.1.conf example.hs 
-[1 of 1] Compiling Main             ( example.hs, example.o )
-Linking example ...
-$ ./example & ./example 
-[1] 18018
-Locking failed with: Unable to acquire lock file: "/var/run/lock/my-example-lock"
-$ [1]+  Done                    ./example
-```
-
-
-Building options
-----------------
-
-* `-fpedantic` (disabled by default) --
-  Pass additional warning flags including `-Werror` to GHC during compilation.
